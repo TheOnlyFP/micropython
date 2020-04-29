@@ -386,7 +386,7 @@ void stm32_init(void) {
     // RCC->AHB1ENR |= 0x00000003; // GPIOAEN, GPIOBEN
 
     // turn on an LED! (on pyboard it's the red one)
-    GPIO_ConfigurePin(GPIO_PORT_0, GPIO_PIN_1, OUTPUT, PID_GPIO, true);
+    GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true);
     // gpio_init(GPIOA, 13, GPIO_MODE_OUT, GPIO_PULL_NONE, 0);
     // gpio_high(GPIOA, 13);
 

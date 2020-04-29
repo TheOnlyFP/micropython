@@ -50,6 +50,7 @@ LIBS = "$(shell $(CC) $(CFLAGS) -print-libgcc-file-name)"
 SRC_C = \
 	main.c \
 	uart_core.c \
+	ports/da14585_minimal/da14586_funcs.c \
 	lib/utils/printf.c \
 	lib/utils/stdout_helpers.c \
 	lib/utils/pyexec.c \

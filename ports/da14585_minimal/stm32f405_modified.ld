@@ -4,11 +4,11 @@
 
 /* Specify the memory areas */
 MEMORY
-{
-    FLASH (rx)      : ORIGIN = 0x07FC0000, LENGTH = 0x16FFF /* entire flash, 96 KiB */
+{                            /*0x00013FFF*/
+    FLASH (rx)      : ORIGIN = 0x07FC1000, LENGTH = 0x13FFF /* entire flash, 96 KiB */
     FLASH_ISR (rx)  : ORIGIN = 0x07FC0000, LENGTH = 0x04000 /* sector 0, 16 KiB */
     FLASH_TEXT (rx) : ORIGIN = 0x07FC4000, LENGTH = 0x12FFF /* sectors 5,6,7,8, 4*128KiB = 512 KiB (could increase it more) */
-    RAM (xrw)       : ORIGIN = 0x07FD6FFF, LENGTH = 0x01000 /* 96 KiB */
+    RAM (xrw)       : ORIGIN = 0x07FD4FFF, LENGTH = 0x03000 /* 96 KiB */
 }
 
 /* top end of the stack */

@@ -8,9 +8,11 @@
 #include "py/gc.h"
 #include "py/mperrno.h"
 #include "lib/utils/pyexec.h"
-#include "ports/da14585_minimal/da14586_funcs.h"
 
-int main(int argc, char **argv);
+// DIALOG SDK INCLUDES
+#include "uart.h"
+#include "gpio.h"
+#include "arch_wdg.h"
 
 #if MICROPY_ENABLE_COMPILER
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
@@ -34,7 +36,8 @@ static char *stack_top;
 static char heap[2048];
 #endif
 
-int main(int argc, char **argv) {
+int be_main(int argc, char **argv) {
+    // GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true);
     int stack_dummy;
     stack_top = (char *)&stack_dummy;
 
@@ -156,8 +159,8 @@ void _start(void) {
     // when we get here: stack is initialised, bss is clear, data is copied
 
     // SCB->CCR: enable 8-byte stack alignment for IRQ handlers, in accord with EABI
-    wdg_freeze();
-    GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true);
+    // GLOBAL_INT_STOP();
+    // wdg_freeze();
     //*((volatile uint32_t *)0xe000ed14) |= 1 << 9;
 
     // initialise the cpu and peripherals
@@ -167,7 +170,7 @@ void _start(void) {
     // #endif
 
     // now that we have a basic system up and running we can call main
-    main(0, NULL);
+    be_main(0, NULL);
 
     // we must not return
     for (;;) {
@@ -234,6 +237,7 @@ typedef struct {
 // #define gpio_high(gpio, pin) do { gpio->BSRRL = (1 << (pin)); } while (0)
 
 void stm32_init(void) {
+    uart_enable(UART1);
     // basic MCU config
     // RCC->CR |= (uint32_t)0x00000001; // set HSION
     // RCC->CFGR = 0x00000000; // reset all

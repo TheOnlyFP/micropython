@@ -1,4 +1,5 @@
 include ../../py/mkenv.mk
+include dia_sdk_includes.mk
 
 CROSS = 1
 
@@ -15,6 +16,7 @@ endif
 INC += -I.
 INC += -I$(TOP)
 INC += -I$(BUILD)
+INC += -I$(SDK_INC)
 
 ifeq ($(CROSS), 1)
 DFU = $(TOP)/tools/dfu.py
@@ -47,10 +49,10 @@ endif
 
 LIBS = "$(shell $(CC) $(CFLAGS) -print-libgcc-file-name)"
 
+# All from top?
 SRC_C = \
 	main.c \
 	uart_core.c \
-	ports/da14585_minimal/da14586_funcs.c \
 	lib/utils/printf.c \
 	lib/utils/stdout_helpers.c \
 	lib/utils/pyexec.c \
@@ -59,6 +61,10 @@ SRC_C = \
 	$(BUILD)/_frozen_mpy.c \
 
 OBJ = $(PY_CORE_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
+
+include dia_sdk_files.mk
+
+OBJ += $(DIA_OBJ)
 
 ifeq ($(CROSS), 1)
 all: $(BUILD)/firmware.elf
@@ -73,6 +79,7 @@ $(BUILD)/_frozen_mpy.c: frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
 
 $(BUILD)/firmware.elf: $(OBJ)
 	$(ECHO) "LINK $@"
+	$(ECHO) "SRC_C $(SRC_C)"
 	$(Q)$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(Q)$(SIZE) $@
 

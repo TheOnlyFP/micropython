@@ -28,7 +28,7 @@ int mp_hal_stdin_rx_chr(void) {
     return c;
 }
 
-// Send string of given length
+// Send string of given length -- replace this?!
 void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
     #if MICROPY_MIN_USE_STDOUT
     int r = write(STDOUT_FILENO, str, len);

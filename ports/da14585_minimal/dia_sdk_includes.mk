@@ -1,0 +1,40 @@
+SDK_TOP := ./dialog_sdk/sdk
+
+SDK_PLATFORM :=$(SDK_TOP)/platform
+SDK_INCLUDE :=$(SDK_PLATFORM)/include
+
+## DRIVERS
+
+SDK_DRIVER :=$(SDK_PLATFORM)/driver
+
+SDK_GPIO :=$(SDK_DRIVER)/gpio
+SDK_UART :=$(SDK_DRIVER)/uart
+SDK_DMA :=$(SDK_DRIVER)/dma
+
+## ARCH DEPENDENT
+
+SDK_ARCH :=$(SDK_PLATFORM)/arch
+
+SDK_ARCH_MAIN :=$(SDK_ARCH)/main
+SDK_COMPILER :=$(SDK_ARCH)/compiler
+SDK_LL :=$(SDK_ARCH)/ll
+
+## PROJECT CONFIGURATIONS
+
+SDK_PROX_REP :=$(SDK_TOP)/projects/target_apps/ble_examples/prox_reporter
+SDK_PROX_REP_SRC :=$(SDK_PROX_REP)/src
+SDK_PROX_REP_CONFIG :=$(SDK_PROX_REP_SRC)/config
+SDK_PROX_REP_PLATFORM :=$(SDK_PROX_REP_SRC)/platform
+
+## COMPILER INCUDES
+
+SDK_INC = $(SDK_INCLUDE) # No -I here as the main Makefile has it
+SDK_INC += -I$(SDK_GPIO)
+SDK_INC += -I$(SDK_UART)
+SDK_INC += -I$(SDK_DMA)
+SDK_INC += -I$(SDK_ARCH)
+SDK_INC += -I$(SDK_ARCH_MAIN)
+SDK_INC += -I$(SDK_COMPILER)
+SDK_INC += -I$(SDK_LL)
+SDK_INC += -I$(SDK_PROX_REP_CONFIG)
+SDK_INC += -I$(SDK_PROX_REP_PLATFORM)

@@ -84,7 +84,7 @@ typedef long mp_off_t;
 #include <alloca.h>
 
 #define MICROPY_HW_BOARD_NAME "minimal"
-#define MICROPY_HW_MCU_NAME "unknown-cpu"
+#define MICROPY_HW_MCU_NAME "da1458x"
 
 #ifdef __linux__
 #define MICROPY_MIN_USE_STDOUT (1)

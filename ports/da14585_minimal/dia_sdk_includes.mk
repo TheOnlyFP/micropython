@@ -1,4 +1,7 @@
+##### INCLUDE PATHS #####
+
 SDK_TOP := ./dialog_sdk/sdk
+PROJ_TOP :=./dialog_sdk/projects
 
 SDK_PLATFORM :=$(SDK_TOP)/platform
 SDK_INCLUDE :=$(SDK_PLATFORM)/include
@@ -11,6 +14,12 @@ SDK_GPIO :=$(SDK_DRIVER)/gpio
 SDK_UART :=$(SDK_DRIVER)/uart
 SDK_DMA :=$(SDK_DRIVER)/dma
 
+SDK_SPI :=$(SDK_DRIVER)/spi
+SDK_SPI_FLASH :=$(SDK_DRIVER)/spi_flash
+
+SDK_I2C :=$(SDK_DRIVER)/i2c
+SDK_I2C_EEPROM :=$(SDK_DRIVER)/i2c_eeprom
+
 ## ARCH DEPENDENT
 
 SDK_ARCH :=$(SDK_PLATFORM)/arch
@@ -19,22 +28,56 @@ SDK_ARCH_MAIN :=$(SDK_ARCH)/main
 SDK_COMPILER :=$(SDK_ARCH)/compiler
 SDK_LL :=$(SDK_ARCH)/ll
 
+## CORE MODULES
+
+# SDK_CORE_MODULES :=$(SDK_PLATFORM)/core_modules
+# SDK_NVDS:=
+
 ## PROJECT CONFIGURATIONS
 
-SDK_PROX_REP :=$(SDK_TOP)/projects/target_apps/ble_examples/prox_reporter
+# PROX REPORTER
+
+SDK_PROX_REP :=$(PROJ_TOP)/target_apps/ble_examples/prox_reporter
 SDK_PROX_REP_SRC :=$(SDK_PROX_REP)/src
 SDK_PROX_REP_CONFIG :=$(SDK_PROX_REP_SRC)/config
 SDK_PROX_REP_PLATFORM :=$(SDK_PROX_REP_SRC)/platform
 
-## COMPILER INCUDES
+# UART PERIPHERAL_EXAMPLE
+
+SDK_PER_EX_UART :=$(PROJ_TOP)/target_apps/peripheral_examples/uart
+SDK_PER_EX_UART_INCLUDE :=$(SDK_PER_EX_UART)/include
+SDK_PER_EX_UART_SRC := $(SDK_PER_EX_UART)/src
+
+
+
+##### COMPILER INCUDES #####
 
 SDK_INC = $(SDK_INCLUDE) # No -I here as the main Makefile has it
+
+## DRIVERS
+
 SDK_INC += -I$(SDK_GPIO)
 SDK_INC += -I$(SDK_UART)
 SDK_INC += -I$(SDK_DMA)
+
+SDK_INC += -I$(SDK_SPI)
+SDK_INC += -I$(SDK_SPI_FLASH)
+SDK_INC += -I$(SDK_I2C)
+SDK_INC += -I$(SDK_I2C_EEPROM)
+
+## ARCH
+
 SDK_INC += -I$(SDK_ARCH)
 SDK_INC += -I$(SDK_ARCH_MAIN)
 SDK_INC += -I$(SDK_COMPILER)
 SDK_INC += -I$(SDK_LL)
-SDK_INC += -I$(SDK_PROX_REP_CONFIG)
-SDK_INC += -I$(SDK_PROX_REP_PLATFORM)
+
+### EXAMPLE PROJECT
+
+## PROX_REPORTER
+# SDK_INC += -I$(SDK_PROX_REP_CONFIG)
+# SDK_INC += -I$(SDK_PROX_REP_PLATFORM)
+
+## UART PERIPHERAL_EXAMPLE
+SDK_INC += -I$(SDK_PER_EX_UART_INCLUDE)
+SDK_INC += -I$(SDK_PER_EX_UART_SRC)

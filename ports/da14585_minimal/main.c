@@ -11,8 +11,11 @@
 
 // DIALOG SDK INCLUDES
 #include "uart.h"
+#include "uart_utils.h"
 #include "gpio.h"
 #include "arch_wdg.h"
+// #include "arch_system.h" // Too much work to include atm
+#include "user_periph_setup.h"
 
 #if MICROPY_ENABLE_COMPILER
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
@@ -37,7 +40,7 @@ static char heap[2048];
 #endif
 
 int be_main(int argc, char **argv) {
-    // GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true);
+    // GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true); //USER LED on devkit (on)
     int stack_dummy;
     stack_top = (char *)&stack_dummy;
 
@@ -46,17 +49,17 @@ int be_main(int argc, char **argv) {
     #endif
     mp_init();
     #if MICROPY_ENABLE_COMPILER
-    // #if MICROPY_REPL_EVENT_DRIVEN
-    // pyexec_event_repl_init();
-    // for (;;) {
-    //     int c = mp_hal_stdin_rx_chr();
-    //     if (pyexec_event_repl_process_char(c)) {
-    //         break;
-    //     }
-    // }
-    // #else
-    // pyexec_friendly_repl();
-    // #endif
+    #if MICROPY_REPL_EVENT_DRIVEN
+    pyexec_event_repl_init();
+    for (;;) {
+        int c = mp_hal_stdin_rx_chr();
+        if (pyexec_event_repl_process_char(c)) {
+            break;
+        }
+    }
+    #else
+    pyexec_friendly_repl();
+    #endif
     do_str("print('hello world!', list(x+1 for x in range(10)), end='eol\\n')", MP_PARSE_SINGLE_INPUT);
     do_str("for i in range(10):\r\n  print(i)", MP_PARSE_FILE_INPUT);
     #else
@@ -155,12 +158,25 @@ const uint32_t isr_vector[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&Default_Handler, // SysTick_Handler
 };
 
+
+void uart_send_blocking_example(uart_t* uart)
+{
+    printf_string(uart, "\n\r\n\r****************************************\n\r");
+    printf_string(uart, "* Micropython Booting with *\n\r");
+    printf_string(uart, "****************************************\n\r\n\r");
+};
+
+
 void _start(void) {
     // when we get here: stack is initialised, bss is clear, data is copied
 
     // SCB->CCR: enable 8-byte stack alignment for IRQ handlers, in accord with EABI
-    // GLOBAL_INT_STOP();
-    // wdg_freeze();
+    // system_init()
+    periph_init();
+    uart_periph_init(UART1);
+    uart_enable(UART1);
+    wdg_freeze();
+    uart_send_blocking_example(UART1);
     //*((volatile uint32_t *)0xe000ed14) |= 1 << 9;
 
     // initialise the cpu and peripherals
@@ -217,8 +233,8 @@ typedef struct {
     volatile uint32_t CR1;
 } periph_uart_t;
 
-#define USART1 ((periph_uart_t *)0x50001000)
-#define GPIOA  ((periph_gpio_t *)0x50003028)
+// #define USART1 ((periph_uart_t *)0x50001000)
+// #define GPIOA  ((periph_gpio_t *)0x50003028)
 // #define GPIOB  ((periph_gpio_t *)0x40020400)
 // #define RCC    ((periph_rcc_t *)0x40023800)
 
@@ -237,7 +253,7 @@ typedef struct {
 // #define gpio_high(gpio, pin) do { gpio->BSRRL = (1 << (pin)); } while (0)
 
 void stm32_init(void) {
-    uart_enable(UART1);
+    // uart_enable(UART1);
     // basic MCU config
     // RCC->CR |= (uint32_t)0x00000001; // set HSION
     // RCC->CFGR = 0x00000000; // reset all

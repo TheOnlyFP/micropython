@@ -162,7 +162,7 @@ const uint32_t isr_vector[] __attribute__((section(".isr_vector"))) = {
 void uart_send_blocking_example(uart_t* uart)
 {
     printf_string(uart, "\n\r\n\r****************************************\n\r");
-    printf_string(uart, "* Micropython Booting with *\n\r");
+    printf_string(uart, "* Micropython Booting on da1458x *\n\r");
     printf_string(uart, "****************************************\n\r\n\r");
 };
 
@@ -177,15 +177,6 @@ void _start(void) {
     uart_enable(UART1);
     wdg_freeze();
     uart_send_blocking_example(UART1);
-    //*((volatile uint32_t *)0xe000ed14) |= 1 << 9;
-
-    // initialise the cpu and peripherals
-    // #if MICROPY_MIN_USE_STM32_MCU
-    // void stm32_init(void);
-    // stm32_init();
-    // #endif
-
-    // now that we have a basic system up and running we can call main
     be_main(0, NULL);
 
     // we must not return

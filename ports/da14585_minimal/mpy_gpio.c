@@ -24,15 +24,22 @@
  * THE SOFTWARE.
  */
 
-#include "gpio.h"
+// Required defs
+#include "py/obj.h"
+#include "py/runtime.h"
+#include "py/builtin.h"
 
-// pin.init(mode, pull=None, *, value)
-STATIC mp_obj_t pyb_pin_obj_init_helper(pyb_pin_obj_t *self, size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-    enum { ARG_mode, ARG_pull, ARG_value };
+#include "gpio.h"
+#include "mpy_gpio.h"
+
+
+// init(mode, pull=None, af=-1, *, value, alt)
+STATIC mp_obj_t pin_obj_init_helper(const pin_obj_t *self, size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_mode, MP_ARG_REQUIRED | MP_ARG_INT },
-        { MP_QSTR_pull, MP_ARG_OBJ, {.u_obj = mp_const_none}},
+        { MP_QSTR_pull, MP_ARG_OBJ, {.u_rom_obj = MP_ROM_NONE}},
         { MP_QSTR_value, MP_ARG_KW_ONLY | MP_ARG_OBJ, {.u_obj = MP_OBJ_NULL}},
+        { MP_QSTR_alt, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = -1}},
     };
 
     // parse args
@@ -40,54 +47,48 @@ STATIC mp_obj_t pyb_pin_obj_init_helper(pyb_pin_obj_t *self, size_t n_args, cons
     mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
     // get io mode
-    uint mode = args[ARG_mode].u_int;
+    uint mode = args[0].u_int;
+    if (!IS_GPIO_MODE(mode)) {
+        mp_raise_msg_varg(&mp_type_ValueError, "invalid pin mode: %d", mode);
+    }
 
     // get pull mode
-    uint pull = GPIO_PULL_NONE;
-    if (args[ARG_pull].u_obj != mp_const_none) {
-        pull = mp_obj_get_int(args[ARG_pull].u_obj);
+    uint pull = GPIO_NOPULL;
+    if (args[1].u_obj != mp_const_none) {
+        pull = mp_obj_get_int(args[1].u_obj);
+    }
+    if (!IS_GPIO_PULL(pull)) {
+        mp_raise_msg_varg(&mp_type_ValueError, "invalid pin pull: %d", pull);
     }
 
-    // get initial value
-    int value;
-    if (args[ARG_value].u_obj == MP_OBJ_NULL) {
-        value = -1;
-    } else {
-        value = mp_obj_is_true(args[ARG_value].u_obj);
+    // get af (alternate function); alt-arg overrides af-arg
+    mp_int_t af = args[4].u_int;
+    if (af == -1) {
+        af = args[2].u_int;
+    }
+    if ((mode == GPIO_MODE_AF_PP || mode == GPIO_MODE_AF_OD) && !IS_GPIO_AF(af)) {
+        mp_raise_msg_varg(&mp_type_ValueError, "invalid pin af: %d", af);
     }
 
-    // save the mode
-    pin_mode[self->phys_port] = mode;
+    // enable the peripheral clock for the port of this pin
+    mp_hal_gpio_clock_enable(self->gpio);
+
+    GPIO_ConfigurePin(GPIO_PORT port, GPIO_PIN pin, GPIO_PUPD mode, GPIO_FUNCTION function,
+                        const bool high)
+
+    // if given, set the pin value before initialising to prevent glitches
+    if (args[3].u_obj != MP_OBJ_NULL) {
+        mp_hal_pin_write(self, mp_obj_is_true(args[3].u_obj));
+    }
 
     // configure the GPIO as requested
-    if (self->phys_port == 16) {
-        // only pull-down seems to be supported by the hardware, and
-        // we only expose pull-up behaviour in software
-        if (pull != GPIO_PULL_NONE) {
-            mp_raise_ValueError("Pin(16) doesn't support pull");
-        }
-    } else {
-        PIN_FUNC_SELECT(self->periph, self->func);
-        #if 0
-        // Removed in SDK 1.1.0
-        if ((pull & GPIO_PULL_DOWN) == 0) {
-            PIN_PULLDWN_DIS(self->periph);
-        }
-        #endif
-        if ((pull & GPIO_PULL_UP) == 0) {
-            PIN_PULLUP_DIS(self->periph);
-        }
-        #if 0
-        if ((pull & GPIO_PULL_DOWN) != 0) {
-            PIN_PULLDWN_EN(self->periph);
-        }
-        #endif
-        if ((pull & GPIO_PULL_UP) != 0) {
-            PIN_PULLUP_EN(self->periph);
-        }
-    }
-
-    pin_set(self->phys_port, value);
+    // GPIO_InitTypeDef GPIO_InitStructure;
+    // GPIO_InitStructure.Pin = self->pin_mask;
+    // GPIO_InitStructure.Mode = mode;
+    // GPIO_InitStructure.Pull = pull;
+    // GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_HIGH;
+    // GPIO_InitStructure.Alternate = af;
+    // HAL_GPIO_Init(self->gpio, &GPIO_InitStructure);
 
     return mp_const_none;
 }
@@ -125,11 +126,10 @@ STATIC const mp_rom_map_elem_t pyb_pin_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_irq),     MP_ROM_PTR(&pyb_pin_irq_obj) },
 
     // class constants
-    { MP_ROM_QSTR(MP_QSTR_IN),        MP_ROM_INT(GPIO_MODE_INPUT) },
-    { MP_ROM_QSTR(MP_QSTR_OUT),       MP_ROM_INT(GPIO_MODE_OUTPUT) },
-    { MP_ROM_QSTR(MP_QSTR_OPEN_DRAIN), MP_ROM_INT(GPIO_MODE_OPEN_DRAIN) },
-    { MP_ROM_QSTR(MP_QSTR_PULL_UP),   MP_ROM_INT(GPIO_PULL_UP) },
-    //{ MP_ROM_QSTR(MP_QSTR_PULL_DOWN), MP_ROM_INT(GPIO_PULL_DOWN) },
+    { MP_ROM_QSTR(MP_QSTR_IN),        MP_ROM_INT(INPUT) },
+    { MP_ROM_QSTR(MP_QSTR_OUT),       MP_ROM_INT(OUTPUT) },
+    { MP_ROM_QSTR(MP_QSTR_PULL_UP),   MP_ROM_INT(INPUT_PULLUP) },
+    { MP_ROM_QSTR(MP_QSTR_PULL_DOWN), MP_ROM_INT(INPUT_PULLDOWN) },
 
     // IRQ triggers, can be or'd together
     { MP_ROM_QSTR(MP_QSTR_IRQ_RISING), MP_ROM_INT(GPIO_PIN_INTR_POSEDGE) },

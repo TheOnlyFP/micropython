@@ -125,6 +125,25 @@ STATIC mp_uint_t pin_ioctl(mp_obj_t self_in, mp_uint_t request, uintptr_t arg, i
     return -1;
 }
 
+/// \classmethod \constructor(id, ...)
+/// Create a new Pin object associated with the id.  If additional arguments are given,
+/// they are used to initialise the pin.  See `init`.
+mp_obj_t mp_pin_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
+    mp_arg_check_num(n_args, n_kw, 1, MP_OBJ_FUN_ARGS_MAX, true);
+
+    // Run an argument through the mapper and return the result.
+    const pin_obj_t *pin = pin_find(args[0]);
+
+    if (n_args > 1 || n_kw > 0) {
+        // pin mode given, so configure this GPIO
+        mp_map_t kw_args;
+        mp_map_init_fixed_table(&kw_args, n_kw, args + n_args);
+        pin_obj_init_helper(pin, n_args - 1, args + 1, &kw_args);
+    }
+
+    return MP_OBJ_FROM_PTR(pin);
+}
+
 STATIC const mp_rom_map_elem_t pyb_pin_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_init),    MP_ROM_PTR(&pyb_pin_init_obj) },

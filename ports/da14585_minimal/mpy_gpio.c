@@ -29,6 +29,8 @@
 #include "py/runtime.h"
 #include "py/builtin.h"
 
+#include "da14585_586.h"
+
 #include "gpio.h"
 #include "mpy_gpio.h"
 
@@ -79,14 +81,13 @@ STATIC mp_obj_t pin_obj_init_helper(const pin_obj_t *self, size_t n_args, const 
     // enable the peripheral clock for the port of this pin
     // mp_hal_gpio_clock_enable(self->gpio);
     
-    if (args[3].u_obj != MP_OBJ_NULL) {
-        GPIO_ConfigurePin(port, pin, mode, function, _obj_is_true(args[3].u_obj))
-    }
+    GPIO_ConfigurePin(port, pin, mode, function, _obj_is_true(args[3].u_obj))
+
 
     // if given, set the pin value before initialising to prevent glitches
-    if (args[3].u_obj != MP_OBJ_NULL) {
-        mp_hal_pin_write(self, mp_obj_is_true(args[3].u_obj));
-    }
+    // if (args[3].u_obj != MP_OBJ_NULL) {
+    //     mp_hal_pin_write(self, mp_obj_is_true(args[3].u_obj));
+    // }
 
     // configure the GPIO as requested
     // GPIO_InitTypeDef GPIO_InitStructure;

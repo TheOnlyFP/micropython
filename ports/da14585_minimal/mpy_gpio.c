@@ -33,11 +33,17 @@
 #include "mpy_gpio.h"
 
 
-// init(mode, pull=None, af=-1, *, value, alt)
+// init(mode, *, value, alt)
 STATIC mp_obj_t pin_obj_init_helper(const pin_obj_t *self, size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_mode, MP_ARG_REQUIRED | MP_ARG_INT },
+        { MP_QSTR_value, MP_ARG_KW_ONLY | MP_ARG_OBJ, {.u_obj = MP_OBJ_NULL}},
+        { MP_QSTR_alt, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = -1}},
+    };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_mode, MP_ARG_REQUIRED | MP_ARG_INT },
         { MP_QSTR_pull, MP_ARG_OBJ, {.u_rom_obj = MP_ROM_NONE}},
+        { MP_QSTR_af, MP_ARG_INT, {.u_int = -1}}, // legacy
         { MP_QSTR_value, MP_ARG_KW_ONLY | MP_ARG_OBJ, {.u_obj = MP_OBJ_NULL}},
         { MP_QSTR_alt, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = -1}},
     };
@@ -53,28 +59,29 @@ STATIC mp_obj_t pin_obj_init_helper(const pin_obj_t *self, size_t n_args, const 
     }
 
     // get pull mode
-    uint pull = GPIO_NOPULL;
-    if (args[1].u_obj != mp_const_none) {
-        pull = mp_obj_get_int(args[1].u_obj);
-    }
-    if (!IS_GPIO_PULL(pull)) {
-        mp_raise_msg_varg(&mp_type_ValueError, "invalid pin pull: %d", pull);
-    }
+    // uint pull = GPIO_NOPULL;
+    // if (args[1].u_obj != mp_const_none) {
+    //     pull = mp_obj_get_int(args[1].u_obj);
+    // }
+    // if (!IS_GPIO_PULL(pull)) {
+    //     mp_raise_msg_varg(&mp_type_ValueError, "invalid pin pull: %d", pull);
+    // }
 
     // get af (alternate function); alt-arg overrides af-arg
-    mp_int_t af = args[4].u_int;
+    mp_int_t af = args[2].u_int;
     if (af == -1) {
         af = args[2].u_int;
     }
-    if ((mode == GPIO_MODE_AF_PP || mode == GPIO_MODE_AF_OD) && !IS_GPIO_AF(af)) {
-        mp_raise_msg_varg(&mp_type_ValueError, "invalid pin af: %d", af);
-    }
+    // if ((mode == GPIO_MODE_AF_PP || mode == GPIO_MODE_AF_OD) && !IS_GPIO_AF(af)) {
+    //     mp_raise_msg_varg(&mp_type_ValueError, "invalid pin af: %d", af);
+    // }
 
     // enable the peripheral clock for the port of this pin
-    mp_hal_gpio_clock_enable(self->gpio);
-
-    GPIO_ConfigurePin(GPIO_PORT port, GPIO_PIN pin, GPIO_PUPD mode, GPIO_FUNCTION function,
-                        const bool high)
+    // mp_hal_gpio_clock_enable(self->gpio);
+    
+    if (args[3].u_obj != MP_OBJ_NULL) {
+        GPIO_ConfigurePin(port, pin, mode, function, _obj_is_true(args[3].u_obj))
+    }
 
     // if given, set the pin value before initialising to prevent glitches
     if (args[3].u_obj != MP_OBJ_NULL) {

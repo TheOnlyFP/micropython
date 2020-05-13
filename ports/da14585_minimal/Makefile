@@ -53,6 +53,7 @@ LIBS = "$(shell $(CC) $(CFLAGS) -print-libgcc-file-name)"
 SRC_C = \
 	main.c \
 	uart_core.c \
+	mpy_gpio.c \
 	lib/utils/printf.c \
 	lib/utils/stdout_helpers.c \
 	lib/utils/pyexec.c \

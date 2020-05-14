@@ -9,6 +9,14 @@
 #include "da_gpio.h"
 #include "uart_utils.h"
 
+STATIC mp_obj_t machine_hello(void)
+{
+    printf_string(UART1, "BEEP BOOP I'm machine BEEP BOOP!\n");
+    return mp_const_none;
+}
+
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_hello_obj, machine_hello);
+
 // create a table of global strings, here the only one is name
 
 STATIC const mp_map_elem_t global_table[] =
@@ -26,15 +34,6 @@ const mp_obj_module_t machine =
     .base = { &mp_type_module },
     .globals = (mp_obj_dict_t*)&mymodule_globals,
 };
-
-
-STATIC mp_obj_t machine_hello(void)
-{
-    printf_string(UART1, "BEEP BOOP I'm machine BEEP BOOP!\n");
-    return mp_const_none;
-}
-
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_hello_obj, machine_hello);
 
 // mp_obj_t mp_pin_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
 //     mp_arg_check_num(n_args, n_kw, 1, MP_OBJ_FUN_ARGS_MAX, true);

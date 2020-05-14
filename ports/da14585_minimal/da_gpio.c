@@ -11,7 +11,7 @@
 
 STATIC mp_obj_t machine_hello(void)
 {
-    printf_string(UART1, "BEEP BOOP I'm machine BEEP BOOP!\n");
+    printf_string(UART1, "BEEP BOOP I'm machine BEEP BOOP!\n\r");
     return mp_const_none;
 }
 
@@ -22,7 +22,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_hello_obj, machine_hello);
 STATIC const mp_map_elem_t global_table[] =
 {
     { MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_machine) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_hello), MP_OBJ_NEW_QSTR(MP_QSTR_hello_obj)}
+    { MP_OBJ_NEW_QSTR(MP_QSTR_hello), (mp_obj_t)&machine_hello_obj}
 };
 
 // create a dictionary of strings from the table

@@ -13,6 +13,7 @@ SDK_DRIVER :=$(SDK_PLATFORM)/driver
 SDK_GPIO :=$(SDK_DRIVER)/gpio
 SDK_UART :=$(SDK_DRIVER)/uart
 SDK_DMA :=$(SDK_DRIVER)/dma
+SDK_SYSCNTL :=$(SDK_DRIVER)/syscntl # Might be needed in later SDK
 
 SDK_SPI :=$(SDK_DRIVER)/spi
 SDK_SPI_FLASH :=$(SDK_DRIVER)/spi_flash
@@ -27,6 +28,11 @@ SDK_ARCH :=$(SDK_PLATFORM)/arch
 SDK_ARCH_MAIN :=$(SDK_ARCH)/main
 SDK_COMPILER :=$(SDK_ARCH)/compiler
 SDK_LL :=$(SDK_ARCH)/ll
+
+## CMSIS
+SDK_CMSIS :=$(SDK_INCLUDE)/CMSIS
+
+SDK_CMSIS_INCLUDE :=$(SDK_CMSIS)/5.6.0/include
 
 ## CORE MODULES
 
@@ -48,8 +54,6 @@ SDK_PER_EX_UART :=$(PROJ_TOP)/target_apps/peripheral_examples/uart
 SDK_PER_EX_UART_INCLUDE :=$(SDK_PER_EX_UART)/include
 SDK_PER_EX_UART_SRC := $(SDK_PER_EX_UART)/src
 
-
-
 ##### COMPILER INCUDES #####
 
 SDK_INC = $(SDK_INCLUDE) # No -I here as the main Makefile has it
@@ -59,6 +63,7 @@ SDK_INC = $(SDK_INCLUDE) # No -I here as the main Makefile has it
 SDK_INC += -I$(SDK_GPIO)
 SDK_INC += -I$(SDK_UART)
 SDK_INC += -I$(SDK_DMA)
+SDK_INC += -I$(SDK_SYSCNTL)
 
 SDK_INC += -I$(SDK_SPI)
 SDK_INC += -I$(SDK_SPI_FLASH)
@@ -71,6 +76,11 @@ SDK_INC += -I$(SDK_ARCH)
 SDK_INC += -I$(SDK_ARCH_MAIN)
 SDK_INC += -I$(SDK_COMPILER)
 SDK_INC += -I$(SDK_LL)
+
+## CMSIS
+
+SDK_INC += -I$(SDK_CMSIS_INCLUDE)
+
 
 ### EXAMPLE PROJECT
 

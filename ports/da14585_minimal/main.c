@@ -162,7 +162,7 @@ const uint32_t isr_vector[] __attribute__((section(".isr_vector"))) = {
 void uart_send_blocking_example(uart_t* uart)
 {
     printf_string(uart, "\n\r\n\r****************************************\n\r");
-    printf_string(uart, "* Micropython Booting on da1458x *\n\r");
+    printf_string(uart, "     Micropython Booting on da1458x  \n\r");
     printf_string(uart, "****************************************\n\r\n\r");
 };
 

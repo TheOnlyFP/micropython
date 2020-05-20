@@ -14,6 +14,14 @@
 #include "uart_utils.h"
 #include "gpio.h"
 #include "arch_wdg.h"
+
+//DIALOG SDK BLE INCLUDES
+// //Not directly included in example project
+// #include "rwble_hl_config.h"
+// #include "da1458x_stack_config.h"
+
+// //Directly included in example project
+// #include "user_all_in_one.h"
 // #include "arch_system.h" // Too much work to include atm
 #include "user_periph_setup.h"
 
@@ -39,8 +47,22 @@ static char *stack_top;
 static char heap[2048];
 #endif
 
+// void ble_app_init_att(void) {
+//     app_param_update_request_timer_used = EASY_TIMER_INVALID_TIMER;
+//     mnf_data_init();
+//     memcpy(stored_adv_data, USER_ADVERTISE_DATA, USER_ADVERTISE_DATA_LEN);
+//     stored_adv_data_len = USER_ADVERTISE_DATA_LEN;
+//     memcpy(stored_scan_rsp_data, USER_ADVERTISE_SCAN_RESPONSE_DATA, USER_ADVERTISE_SCAN_RESPONSE_DATA_LEN);
+//     stored_scan_rsp_data_len = USER_ADVERTISE_SCAN_RESPONSE_DATA_LEN;
+// }
+
+
 int be_main(int argc, char **argv) {
     // GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true); //USER LED on devkit (on)
+    
+    // ble_app_init_att();
+    // user_app_adv_start();
+
     int stack_dummy;
     stack_top = (char *)&stack_dummy;
 
@@ -48,23 +70,23 @@ int be_main(int argc, char **argv) {
     gc_init(heap, heap + sizeof(heap));
     #endif
     mp_init();
-    #if MICROPY_ENABLE_COMPILER
-    #if MICROPY_REPL_EVENT_DRIVEN
-    pyexec_event_repl_init();
-    for (;;) {
-        int c = mp_hal_stdin_rx_chr();
-        if (pyexec_event_repl_process_char(c)) {
-            break;
-        }
-    }
-    #else
+    // #if MICROPY_ENABLE_COMPILER
+    // #if MICROPY_REPL_EVENT_DRIVEN
+    // pyexec_event_repl_init();
+    // for (;;) {
+    //     int c = mp_hal_stdin_rx_chr();
+    //     if (pyexec_event_repl_process_char(c)) {
+    //         break;
+    //     }
+    // }
+    // // #else
     pyexec_friendly_repl();
-    #endif
-    do_str("print('hello world!', list(x+1 for x in range(10)), end='eol\\n')", MP_PARSE_SINGLE_INPUT);
-    do_str("for i in range(10):\r\n  print(i)", MP_PARSE_FILE_INPUT);
-    #else
-    pyexec_frozen_module("frozentest.py");
-    #endif
+    // #endif
+    // // do_str("print('hello world!', list(x+1 for x in range(10)), end='eol\\n')", MP_PARSE_SINGLE_INPUT);
+    // // do_str("for i in range(10):\r\n  print(i)", MP_PARSE_FILE_INPUT);
+    // #else
+    // // pyexec_frozen_module("frozentest.py");
+    // #endif
     mp_deinit();
     return 0;
 }

@@ -14,14 +14,20 @@
 #include "uart_utils.h"
 #include "gpio.h"
 #include "arch_wdg.h"
+#include "spi.h"
+#include "spi_flash.h"
 
-//DIALOG SDK BLE INCLUDES
-// //Not directly included in example project
+// DIALOG SDK BLE INCLUDES
+// Not directly included in example project
 // #include "rwble_hl_config.h"
 // #include "da1458x_stack_config.h"
 
-// //Directly included in example project
-// #include "user_all_in_one.h"
+// Directly included in example project
+// #include "user_all_in_one.h"'
+#include "rwble_hl_config.h"
+#include "gapc_task.h"
+#include "user_proxr.h"
+
 // #include "arch_system.h" // Too much work to include atm
 #include "user_periph_setup.h"
 
@@ -47,14 +53,9 @@ static char *stack_top;
 static char heap[2048];
 #endif
 
-// void ble_app_init_att(void) {
-//     app_param_update_request_timer_used = EASY_TIMER_INVALID_TIMER;
-//     mnf_data_init();
-//     memcpy(stored_adv_data, USER_ADVERTISE_DATA, USER_ADVERTISE_DATA_LEN);
-//     stored_adv_data_len = USER_ADVERTISE_DATA_LEN;
-//     memcpy(stored_scan_rsp_data, USER_ADVERTISE_SCAN_RESPONSE_DATA, USER_ADVERTISE_SCAN_RESPONSE_DATA_LEN);
-//     stored_scan_rsp_data_len = USER_ADVERTISE_SCAN_RESPONSE_DATA_LEN;
-// }
+void ble_app_init_att(void) {
+
+}
 
 
 int be_main(int argc, char **argv) {

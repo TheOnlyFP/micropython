@@ -32,7 +32,9 @@ mp_import_stat_t mp_import_stat(const char *path);
 mp_obj_t mp_builtin_open(size_t n_args, const mp_obj_t *args, mp_map_t *kwargs);
 void nlr_jump_fail(void *val);
 void NORETURN __fatal_error(const char *msg);
+#ifndef NDEBUG
 void MP_WEAK __assert_func(const char *file, int line, const char *func, const char *expr);
+#endif
 void Reset_Handler(void) __attribute__((naked));
 void Default_Handler(void);
 void uart_send_blocking_example(uart_t* uart);

@@ -2,11 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "mpy_main.h"
+
 #include "dialog_sdk/projects/target_apps/peripheral_examples/uart/include/user_periph_setup.h"
 
 #include "py/compile.h"
 #include "py/runtime.h"
-//#include "py/repl.h"
+#include "py/repl.h"
 #include "py/gc.h"
 #include "py/mperrno.h"
 #include "lib/utils/pyexec.h"
@@ -51,7 +53,7 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
 
 static char *stack_top;
 #if MICROPY_ENABLE_GC
-static char heap[2048];
+static char heap[1024]; // 2048
 #endif
 
 // void ble_app_init_att(void) {
@@ -135,54 +137,6 @@ void MP_WEAK __assert_func(const char *file, int line, const char *func, const c
 }
 #endif
 
-#if MICROPY_MIN_USE_CORTEX_CPU
-
-// this is a minimal IRQ and reset framework for any Cortex-M CPU
-
-// extern uint32_t _estack, _sidata, _sdata, _edata, _sbss, _ebss;
-
-// void Reset_Handler(void) __attribute__((naked));
-// void Reset_Handler(void) {
-//     // set stack pointer
-//     //__asm volatile ("ldr sp, =_estack");
-//     // copy .data section from flash to RAM
-//     for (uint32_t *src = &_sidata, *dest = &_sdata; dest < &_edata;) {
-//         *dest++ = *src++;
-//     }
-//     // zero out .bss section
-//     for (uint32_t *dest = &_sbss; dest < &_ebss;) {
-//         *dest++ = 0;
-//     }
-//     // jump to board initialisation
-//     void _start(void);
-//     _start();
-// }
-
-// void Default_Handler(void) {
-//     for (;;) {
-//     }
-// }
-
-// const uint32_t isr_vector[] __attribute__((section(".isr_vector"))) = {
-//     (uint32_t)&_estack,
-//     (uint32_t)&Reset_Handler,
-//     (uint32_t)&Default_Handler, // NMI_Handler
-//     (uint32_t)&Default_Handler, // HardFault_Handler
-//     (uint32_t)&Default_Handler, // MemManage_Handler
-//     (uint32_t)&Default_Handler, // BusFault_Handler
-//     (uint32_t)&Default_Handler, // UsageFault_Handler
-//     0,
-//     0,
-//     0,
-//     0,
-//     (uint32_t)&Default_Handler, // SVC_Handler
-//     (uint32_t)&Default_Handler, // DebugMon_Handler
-//     0,
-//     (uint32_t)&Default_Handler, // PendSV_Handler
-//     (uint32_t)&Default_Handler, // SysTick_Handler
-// };
-
-
 void uart_send_blocking_example(uart_t* uart)
 {
     printf_string(uart, "\n\r\n\r****************************************\n\r");
@@ -190,11 +144,10 @@ void uart_send_blocking_example(uart_t* uart)
     printf_string(uart, "****************************************\n\r\n\r");
 };
 
-void mpy_start(void) {
-    // when we get here: stack is initialised, bss is clear, data is copied
+extern void periph_init(void);
+extern void uart_periph_init(uart_t *uart);
 
-    // SCB->CCR: enable 8-byte stack alignment for IRQ handlers, in accord with EABI
-    // system_init()
+void mpy_start(void) {
     periph_init();
     uart_periph_init(UART1);
     uart_enable(UART1);
@@ -202,11 +155,7 @@ void mpy_start(void) {
     uart_send_blocking_example(UART1);
     mpymain(0, NULL);
 
-    // we must not return
-    for (;;) {
-    }
+    // we must (-not-) return
+    // for (;;) {
+    // }
 }
-
-
-
-#endif

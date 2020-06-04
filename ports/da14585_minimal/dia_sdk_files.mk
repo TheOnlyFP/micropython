@@ -14,11 +14,11 @@ DIA_DRIVERS += $(addprefix dialog_sdk/sdk/platform/driver/,\
  	uart/uart_utils.c \
 	)
 
-DIA_PERIPH_EX_UART += $(addprefix dialog_sdk/projects/target_apps/peripheral_examples/uart/,\
-	src/user_periph_setup.c \
-	)
+# DIA_PERIPH_EX_UART += $(addprefix dialog_sdk/projects/target_apps/peripheral_examples/uart/,\
+# 	src/user_periph_setup.c \
+# 	)
 
 DIA_C_FILES += $(DIA_DRIVERS)
-DIA_C_FILES += $(DIA_PERIPH_EX_UART)
+# DIA_C_FILES += $(DIA_PERIPH_EX_UART)
 
 DIA_OBJ = $(PY_CORE_O) $(addprefix $(BUILD)/, $(DIA_C_FILES:.c=.o))

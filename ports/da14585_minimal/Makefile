@@ -13,6 +13,11 @@ ifeq ($(CROSS), 1)
 CROSS_COMPILE ?= arm-none-eabi-
 endif
 
+#Static library creation
++AR = $(CROSS_COMPILE)ar
+PROG = mpylib
+
+#Inclusion
 INC += -I.
 INC += -I$(TOP)
 INC += -I$(BUILD)
@@ -51,7 +56,7 @@ LIBS = "$(shell $(CC) $(CFLAGS) -print-libgcc-file-name)"
 
 # All from top?
 SRC_C = \
-	main.c \
+	mpy_main.c \
 	uart_core.c \
 	mymodule.c \
 	da_gpio.c \
@@ -84,6 +89,11 @@ $(BUILD)/firmware.elf: $(OBJ)
 	$(ECHO) "SRC_C $(SRC_C)"
 	$(Q)$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(Q)$(SIZE) $@
+
+staticlib: $(OBJ)
+	$(ECHO) "LIB $(PROG)"
+	$(Q)$(AR) rcs $(PROG).a $(OBJ)
+	$(ECHO) "Finished creating $(PROG).a"
 
 # $(BUILD)/firmware.bin: $(BUILD)/firmware.elf
 # 	$(Q)$(OBJCOPY) -O binary -j .isr_vector -j .text -j .data $^ $(BUILD)/firmware.bin

@@ -225,5 +225,6 @@ CFLAGS_MOD += -DMICROPY_PY_BTREE=1
 # and we have separate BTREE_DEFS so the definitions don't interfere with other source code
 $(BUILD)/$(BTREE_DIR)/%.o: CFLAGS += -Wno-old-style-definition -Wno-sign-compare -Wno-unused-parameter $(BTREE_DEFS)
 $(BUILD)/extmod/modbtree.o: CFLAGS += $(BTREE_DEFS)
+
 endif
 

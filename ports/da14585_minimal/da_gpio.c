@@ -14,8 +14,9 @@
 #include "gpio.h"
 #include "da_gpio.h"
 #include "uart_utils.h"
+#include "user_periph_setup.h"
 
-#define BUFSIZE_UART1 20
+#define BUFSIZE_UART1 25
 #define BUFFSIZE_SMALL 1
 
 const mp_obj_type_t machine_type;

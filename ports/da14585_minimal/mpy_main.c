@@ -20,9 +20,15 @@
 #include "arch_wdg.h"
 #include "spi.h"
 #include "spi_flash.h"
+// #include "arch_system.h"
+
+#include "app.h"
+
+// #include "arch_system.h"
 
 // DIALOG SDK BLE INCLUDES
 // Not directly included in example project
+// #include "rwble_config.h"
 // #include "rwble_hl_config.h"
 // #include "da1458x_stack_config.h"
 
@@ -144,16 +150,12 @@ void uart_send_blocking_example(uart_t* uart)
     printf_string(uart, "****************************************\n\r\n\r");
 };
 
-extern void periph_init(void);
-extern void uart_periph_init(uart_t *uart);
-extern void system_init(void);
-
 void da_system_init(void) {
     wdg_freeze();
 }
 
 void mpy_start(void) {
-    //system_init();
+    app_init();
     da_system_init();
     periph_init();
     uart_periph_init(UART1);

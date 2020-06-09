@@ -4,7 +4,7 @@
 
 #include "mpy_main.h"
 
-#include "dialog_sdk/projects/target_apps/peripheral_examples/uart/include/user_periph_setup.h"
+#include "user_periph_setup.h"
 
 #include "py/compile.h"
 #include "py/runtime.h"
@@ -62,7 +62,7 @@ static char heap[1024]; // 2048
 
 
 int mpymain(int argc, char **argv) {
-    // GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true); //USER LED on devkit (on)
+    //GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true); //USER LED on devkit (on)
     
     // ble_app_init_att();
     // user_app_adv_start();
@@ -146,12 +146,18 @@ void uart_send_blocking_example(uart_t* uart)
 
 extern void periph_init(void);
 extern void uart_periph_init(uart_t *uart);
+extern void system_init(void);
+
+void da_system_init(void) {
+    wdg_freeze();
+}
 
 void mpy_start(void) {
+    //system_init();
+    da_system_init();
     periph_init();
     uart_periph_init(UART1);
     uart_enable(UART1);
-    wdg_freeze();
     uart_send_blocking_example(UART1);
     mpymain(0, NULL);
 

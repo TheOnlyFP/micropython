@@ -60,6 +60,7 @@ SRC_C = \
 	uart_core.c \
 	mymodule.c \
 	da_gpio.c \
+	da_ble.c \
 	lib/utils/printf.c \
 	lib/utils/stdout_helpers.c \
 	lib/utils/pyexec.c \
@@ -90,10 +91,12 @@ $(BUILD)/firmware.elf: $(OBJ)
 	$(Q)$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(Q)$(SIZE) $@
 
-staticlib: $(OBJ)
+$(BUILD)/$(PROG).a: $(OBJ)
 	$(ECHO) "LIB $(PROG)"
 	$(Q)$(AR) rcs $(PROG).a $(OBJ)
 	$(ECHO) "Finished creating $(PROG).a"
+
+staticlib: $(BUILD)/$(PROG).a
 
 # $(BUILD)/firmware.bin: $(BUILD)/firmware.elf
 # 	$(Q)$(OBJCOPY) -O binary -j .isr_vector -j .text -j .data $^ $(BUILD)/firmware.bin

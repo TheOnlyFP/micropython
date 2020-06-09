@@ -104,7 +104,6 @@ STATIC const mp_rom_map_elem_t mymodule_hello_locals_dict_table[] = {
     { MP_OBJ_NEW_QSTR(MP_QSTR_OUT), MP_ROM_INT(OUTPUT) },
     { MP_OBJ_NEW_QSTR(MP_QSTR_PULL_UP), MP_ROM_INT(INPUT_PULLUP) },
     { MP_OBJ_NEW_QSTR(MP_QSTR_PULL_DOWN), MP_ROM_INT(INPUT_PULLDOWN) },
-    { MP_OBJ_NEW_QSTR(MP_QSTR_OUT), MP_ROM_INT(OUTPUT) },
 };
 STATIC MP_DEFINE_CONST_DICT(mymodule_hello_locals_dict,
                             mymodule_hello_locals_dict_table);

@@ -27,3 +27,8 @@ Q(PULL_DOWN)
 Q(hello)
 Q(helloObj)
 Q(mymodule_helloObj_type)
+
+
+// BLE
+Q(BLE)
+Q(adv)

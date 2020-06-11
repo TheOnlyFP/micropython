@@ -24,7 +24,6 @@ Q(PULL_DOWN)
 
 
 // mymodule.c
-Q(hello)
 Q(helloObj)
 Q(mymodule_helloObj_type)
 
@@ -32,3 +31,6 @@ Q(mymodule_helloObj_type)
 // BLE
 Q(BLE)
 Q(adv)
+Q(hello)
+Q(bleObj)
+Q(schedule_ble)

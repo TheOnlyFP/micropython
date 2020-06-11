@@ -24,7 +24,10 @@
 
 #include "app.h"
 
-// #include "arch_system.h"
+// tester func
+#include "py/runtime.h"
+
+
 
 // DIALOG SDK BLE INCLUDES
 // Not directly included in example project
@@ -155,7 +158,7 @@ void da_system_init(void) {
 }
 
 void mpy_start(void) {
-    app_init();
+    //app_init();
     da_system_init();
     periph_init();
     uart_periph_init(UART1);
@@ -166,4 +169,12 @@ void mpy_start(void) {
     // we must (-not-) return
     // for (;;) {
     // }
+}
+
+
+// Calls the frozen python function based on the name passed 
+void mpy_exec(char* string) {
+    qstr qst = qstr_from_str(string);
+    mp_obj_t found = mp_load_global(qst);
+    mp_call_function_n_kw(found, 0, 0, NULL);
 }

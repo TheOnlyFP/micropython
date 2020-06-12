@@ -15,18 +15,22 @@ Copy the `sdk` folder from the downloaded SDK into this folder and rename it `di
 
 You should now be able to compile micropython for the da14586.
 
-## Pre-compile .py for freezing
+## Compiling
+
+Use wsl (Windows Subsystem for Linux) to run make on Windows. Ubunut 18.04 works.
+
+### Pre-compile .py for freezing
 Pre compile the .py via:
 
     $ ./mpy-cross frozentest.py
 
-## Building static library
+### Building static library
 
 Build the static library via:
 
     $ make staticlib
 
-## Building port for da14586 (currently broken)
+### Building port for da14586 (currently broken)
 
 Build the port via:
 

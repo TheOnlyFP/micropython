@@ -5,9 +5,11 @@ It is intented to run on dialog's da 14586 chip.
 
 ## Dialog sdk files
 
-This port does not include the files from dialog's SDK.
+This port does not include the files from dialog's SDK. The used version is `6.0.12.1020.2`-<br>
 It can be downloaded from dialog's website <br>
 [https://www.dialog-semiconductor.com/products/connectivity/bluetooth-low-energy/smartbond-da14585-and-da14586](https://www.dialog-semiconductor.com/products/connectivity/bluetooth-low-energy/smartbond-da14585-and-da14586)
+
+Extract it and modify `SDK_HEAD` in `dia_sdk_includes` & `dia_sdk_files`
 
 Copy the `sdk` folder from the downloaded SDK into this folder and rename it `dialog_sdk`.
 

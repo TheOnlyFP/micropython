@@ -1,9 +1,6 @@
 import machine
 print("machine found")
 
-import BLE
-print("BLE found")
-
 
 def main():
     print("\n\nfrozentest.py\n")

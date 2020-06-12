@@ -60,7 +60,6 @@ SRC_C = \
 	uart_core.c \
 	mymodule.c \
 	da_gpio.c \
-	da_ble.c \
 	lib/utils/printf.c \
 	lib/utils/stdout_helpers.c \
 	lib/utils/pyexec.c \

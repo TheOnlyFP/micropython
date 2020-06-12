@@ -1,7 +1,11 @@
 ##### INCLUDE PATHS #####
 
-SDK_TOP := ./dialog_sdk/sdk
-PROJ_TOP :=./dialog_sdk/projects
+# OLD-DEFAULT   ./dialog_sdk
+SDK_HEAD :=../../../6.0.12.1020.2/SDK/6.0.12.1020.2
+
+
+SDK_TOP :=$(SDK_HEAD)/sdk
+PROJ_TOP :=$(SDK_HEAD)/projects
 
 SDK_PLATFORM :=$(SDK_TOP)/platform
 SDK_INCLUDE :=$(SDK_PLATFORM)/include

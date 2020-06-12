@@ -80,12 +80,10 @@ typedef long mp_off_t;
 // Custom Modules for uPython
 extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_mymodule;
-extern const struct _mp_obj_module_t mp_module_ble;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
    { MP_OBJ_NEW_QSTR(MP_QSTR_mymodule), (mp_obj_t)&mp_module_mymodule }, \
-   { MP_OBJ_NEW_QSTR(MP_QSTR_machine), (mp_obj_t)&mp_module_machine }, \
-   { MP_OBJ_NEW_QSTR(MP_QSTR_BLE), (mp_obj_t)&mp_module_ble}
+   { MP_OBJ_NEW_QSTR(MP_QSTR_machine), (mp_obj_t)&mp_module_machine },
 
 
 // extra built in names to add to the global namespace

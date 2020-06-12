@@ -21,9 +21,6 @@
 #include "spi.h"
 #include "spi_flash.h"
 
-#include "app.h"
-
-
 #if MICROPY_ENABLE_COMPILER
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
@@ -45,10 +42,6 @@ static char *stack_top;
 #if MICROPY_ENABLE_GC
 static char heap[1024]; // 2048
 #endif
-
-// void ble_app_init_att(void) {
-
-// }
 
 
 int mpymain(int argc, char **argv) {

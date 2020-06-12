@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "dialog_sdk/projects/target_apps/peripheral_examples/uart/include/user_periph_setup.h"
-
 #include "py/compile.h"
 #include "py/runtime.h"
 #include "py/repl.h"

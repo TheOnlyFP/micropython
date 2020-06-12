@@ -52,11 +52,6 @@ static char heap[1024]; // 2048
 
 
 int mpymain(int argc, char **argv) {
-    //GPIO_ConfigurePin(GPIO_PORT_1, GPIO_PIN_0, OUTPUT, PID_GPIO, true); //USER LED on devkit (on)
-    
-    // ble_app_init_att();
-    // user_app_adv_start();
-
     int stack_dummy;
     stack_top = (char *)&stack_dummy;
 
@@ -127,6 +122,7 @@ void MP_WEAK __assert_func(const char *file, int line, const char *func, const c
 }
 #endif
 
+// Eye candy
 void uart_send_blocking_example(uart_t* uart)
 {
     printf_string(uart, "\n\r\n\r****************************************\n\r");
@@ -150,11 +146,12 @@ void mpy_start(void) {
 
 
 // Calls the frozen python function based on the name passed 
-// TODO Make it take variable amount of args (variable type) and parse to mpy
+// TODO Make it take variable amount of args (variable type) and parse to mpy 
 void mpy_exec(char* string) {
-    qstr qst = qstr_from_str(string);
-    mp_obj_t found = mp_load_global(qst);
-    mp_call_function_n_kw(found, 0, 0, NULL);
+    qstr qst = qstr_from_str(string); // finds Qstr in mpy environment from string
+    mp_obj_t found = mp_load_global(qst); // loads that Qstr's object (value) into a mpy object
+    mp_call_function_n_kw(found, 0, 0, NULL); //calls a the function matching the supplied:
+    //| Qstr | X number of args | X number of keywords | List of all args / pointer to singular arg |
 }
 
 // void mpy_exec_pass_struct(char* string, struct gapc_connection_req_ind struct_arg) {

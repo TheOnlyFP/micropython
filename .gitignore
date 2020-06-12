@@ -47,3 +47,4 @@ genrst/
 # Dialog SDK
 ######################
 dialog_sdk/
+ports/da14585_minimal/frozentest.mpy

@@ -20,28 +20,9 @@
 #include "arch_wdg.h"
 #include "spi.h"
 #include "spi_flash.h"
-// #include "arch_system.h"
 
 #include "app.h"
 
-// tester func
-#include "py/runtime.h"
-
-
-
-// DIALOG SDK BLE INCLUDES
-// Not directly included in example project
-// #include "rwble_config.h"
-// #include "rwble_hl_config.h"
-// #include "da1458x_stack_config.h"
-
-// Directly included in example project
-// #include "user_all_in_one.h"'
-// #include "rwble_hl_config.h"
-// #include "gapc_task.h"
-//#include "user_proxr.h"
-
-// #include "arch_system.h" // Too much work to include atm
 
 #if MICROPY_ENABLE_COMPILER
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
@@ -158,23 +139,26 @@ void da_system_init(void) {
 }
 
 void mpy_start(void) {
-    //app_init();
     da_system_init();
     periph_init();
     uart_periph_init(UART1);
     uart_enable(UART1);
     uart_send_blocking_example(UART1);
     mpymain(0, NULL);
-
-    // we must (-not-) return
-    // for (;;) {
-    // }
 }
 
 
+
 // Calls the frozen python function based on the name passed 
+// TODO Make it take variable amount of args (variable type) and parse to mpy
 void mpy_exec(char* string) {
     qstr qst = qstr_from_str(string);
     mp_obj_t found = mp_load_global(qst);
     mp_call_function_n_kw(found, 0, 0, NULL);
 }
+
+// void mpy_exec_pass_struct(char* string, struct gapc_connection_req_ind struct_arg) {
+//     qstr qst = qstr_from_str(string);
+//     mp_obj_t found = mp_load_global(qst);
+//     mp_call_function_n_kw(found, 1, 0, struct_arg);
+// }

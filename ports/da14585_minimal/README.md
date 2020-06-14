@@ -19,6 +19,10 @@ You should now be able to compile micropython for the da14586.
 
 Use wsl (Windows Subsystem for Linux) to run make on Windows. Ubunut 18.04 works.
 
+You need to install GCC for arm to compile, install it via:
+
+	$ sudo apt install gcc-arm-none-eabi
+
 ### Pre-compile .py for freezing
 Pre compile the .py via:
 

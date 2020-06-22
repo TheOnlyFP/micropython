@@ -53,3 +53,6 @@ recompile and run the firmware and it will execute the frozentest.py
 file.
 
 This reduces the size of the compiled code to round 52000 bytes.
+
+## Adding modules
+Modules can be added by following the guide described in `Adding_modules.md`.
